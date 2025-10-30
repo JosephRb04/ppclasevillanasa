@@ -225,6 +225,39 @@
     if (typeof AOS !== 'undefined') {
       AOS.refresh();
     }
-  });  
+  });
+  
+document.addEventListener('DOMContentLoaded', function () {
+  // Maneja tanto Papelería como Accesorios
+  const filterLinks = {
+    '#filter-papeleria': '.filter-web',
+    '#filter-accesorios': '.filter-mobile',
+    '#filter-muebleria': '.filter-branding',
+    '#filter-equipos': '.filter-ui'
+  };
+
+  // Agrega listeners a ambos enlaces
+  Object.keys(filterLinks).forEach(filterId => {
+    const link = document.querySelector(`a[href="${filterId}"]`);
+    if (!link) return;
+    
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      // Mantiene el scroll hacia Products como tenías
+      const target = document.querySelector('#Products');
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+        
+        // Después del scroll, activa el filtro correspondiente
+        setTimeout(() => {
+          const filterElement = document.querySelector(filterId);
+          if (filterElement) {
+            filterElement.click();
+          }
+        }, 400); // Pequeño delay para que termine el scroll
+      }
+    });
+  });
+});
 
 })();

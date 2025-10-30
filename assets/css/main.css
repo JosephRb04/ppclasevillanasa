@@ -2039,3 +2039,16 @@ section,
   text-align: justify;      /* Justificado */
   line-height: 1.8;
 }
+
+/*--------------------------------------------------------------
+# Specific Objectives Section
+--------------------------------------------------------------*/
+
+.objetivos-especificos {
+    margin-top: 15px;
+}
+
+.objetivos-especificos .objetivo {
+    margin: 5px 0;
+    line-height: 1.4;
+}
