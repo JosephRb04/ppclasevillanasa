@@ -254,10 +254,12 @@ document.addEventListener('DOMContentLoaded', function () {
           if (filterElement) {
             filterElement.click();
           }
-        }, 400); // Pequeño delay para que termine el scroll
+        }, 700); // Pequeño delay para que termine el scroll
       }
     });
   });
 });
+
+
 
 })();
