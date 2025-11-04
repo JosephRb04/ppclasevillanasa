@@ -19,6 +19,9 @@
   --nav-font: "Poppins",  sans-serif;
 }
 
+
+
+
 /* Global Colors - The following color variables are used throughout the website. Updating them here will change the color scheme of the entire website */
 :root { 
   --background-color: #E6E6FA; /* #05071e      Background color for the entire website, including individual sections */
@@ -79,6 +82,42 @@ a {
   text-decoration: none;
   transition: 0.3s;
 }
+@font-face {
+  font-family: 'Merienda';
+  src: url('../fonts/Merienda/Merienda-VariableFont_wght.ttf') format('truetype');
+  font-weight: 300 900;
+  font-style: normal;
+}
+
+
+p {
+  font-family: "Merienda", cursive;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 1.1rem;
+}
+  
+
+.cta-inner .list-hours {
+  font-family: "Merienda", cursive;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 1.1rem;
+}
+
+.cta-inner .list-hours span {
+  font-family: "Merienda", cursive;
+  font-weight: 600;
+}
+
+
+
+
+
+
+
 
 a:hover {
   color: color-mix(in srgb, var(--accent-color), transparent 25%);
@@ -2212,17 +2251,7 @@ section,
   font-family: 'Artistik', cursive, sans-serif;
 }
 
-/*--------------------------------------------------------------
-# Tipografía Hero Section
---------------------------------------------------------------*/
 
-.hero-description {
-  font-size: 1.5rem;        /* Tamaño más grande */
-  color: var(--heading-color); /* Más visible */
-  font-weight: 500;
-  text-align: justify;      /* Justificado */
-  line-height: 1.8;
-}
 
 /*--------------------------------------------------------------
 # Specific Objectives Section
@@ -2333,6 +2362,7 @@ p {
 @media (min-width: 992px) {
   .list-hours {
     width: 70%;
+    width: 90%;
     font-size: 1.1rem;
   }
 }
@@ -2347,4 +2377,5 @@ p {
   background-color: #f6e1c5;
 }
   */
+
 

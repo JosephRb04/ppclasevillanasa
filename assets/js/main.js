@@ -259,7 +259,4 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
-
-
-
 })();
