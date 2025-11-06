@@ -259,4 +259,93 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
+
+/**
+ * Horario de atención dinámico
+*/
+
+function actualizarEstadoHorario() {
+  const hoy = new Date();
+  const diaSemana = hoy.getDay(); // 0 Dom - 6 Sáb
+  const hora = hoy.getHours();
+  const minutos = hoy.getMinutes();
+  
+  // Horarios en formato 24h
+  const horarios = {
+    1: { apertura: 9, cierre: 19 }, // Lunes
+    2: { apertura: 9, cierre: 19 }, // Martes
+    3: { apertura: 9, cierre: 19 }, // Miércoles
+    4: { apertura: 9, cierre: 19 }, // Jueves
+    5: { apertura: 9, cierre: 19 }, // Viernes
+    6: { apertura: 9, cierre: 16 }, // Sábado
+    0: null // Domingo cerrado
+  };
+
+  const hoyHorario = horarios[diaSemana];
+  const estado = document.getElementById("estadoHorario");
+  const horarioTexto = document.getElementById("horarioHoy");
+
+  // Domingo o sin horario
+  if (!hoyHorario) {
+    estado.textContent = "Cerrado (Hoy no hay servicio)";
+    horarioTexto.textContent = "Horario: —";
+    return;
+  }
+
+  const ahoraEnMin = hora * 60 + minutos;
+  const apertura = hoyHorario.apertura * 60;
+  const cierre = hoyHorario.cierre * 60;
+
+  // Mostrar horario del día
+  horarioTexto.textContent = `Horario de hoy: ${hoyHorario.apertura}:00 a ${hoyHorario.cierre}:00 hrs`;
+
+  // Por abrir (faltan menos de 5 min)
+  if (ahoraEnMin >= apertura - 5 && ahoraEnMin < apertura) {
+    estado.textContent = "Por abrir (en menos de 5 minutos)";
+    return;
+  }
+
+  // Por cerrar (faltan menos de 5 min)
+  if (ahoraEnMin >= cierre - 5 && ahoraEnMin < cierre) {
+    estado.textContent = "Por cerrar (quedan ~5 minutos)";
+    return;
+  }
+
+  // Abierto
+  if (ahoraEnMin >= apertura && ahoraEnMin < cierre) {
+    estado.textContent = "Abierto";
+    return;
+  }
+
+  // Cerrado
+  estado.textContent = "Cerrado";
+}
+
+
+  document.addEventListener("DOMContentLoaded", actualizarEstadoHorario);
+
+
+ 
+
+
+/*
+document.addEventListener('DOMContentLoaded', () => {
+  const dias = document.querySelectorAll('.list-hours .hour');
+  
+  const hoy = new Date().getDay();
+  if (dias[hoy]) {
+    dias[hoy].classList.add('today');
+  } else {
+    console.warn('No se encontró el elemento correspondiente al día actual.');
+  }
+});
+*/
+
+window.addEventListener('DOMContentLoaded', event => {
+    const listHoursArray = document.body.querySelectorAll('.list-hours li');
+    listHoursArray[new Date().getDay()].classList.add(('today'));
+})
+
+
+
 })();

@@ -2285,6 +2285,8 @@ section,
  */
 
 
+
+
 @media (min-width: 1200px) {
   .col-xl-9 {
     flex: 0 0 auto;
@@ -2295,7 +2297,6 @@ section,
 p {
   line-height: 1.75;
 }
-
 
 .page-section {
   margin-top: 5rem;
@@ -2353,10 +2354,15 @@ p {
   margin-bottom: 1rem;
   font-style: italic;
 }
-.list-hours .list-hours-item.today {
-  font-weight: bold;
-  color: #e6a756;
+
+
+
+.today {
+  color: var(--heading-color);
+  font-family: var(--heading-font);
+  font-family: 'Artistik', cursive, sans-serif;
 }
+
 
 
 @media (min-width: 992px) {
@@ -2366,16 +2372,12 @@ p {
     font-size: 1.1rem;
   }
 }
-  
 
-.address strong {
-  font-size: 1.2rem;
-}
+/*--------------------------------------------------------------
+# Schedule Section
+--------------------------------------------------------------*/
 
-/*
-.bg-faded {
-  background-color: #f6e1c5;
-}
-  */
+
+
 
 
