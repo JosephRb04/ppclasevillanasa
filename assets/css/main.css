@@ -15,12 +15,22 @@
 /* Fonts */
 :root {
   --default-font: "Roboto",  system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --heading-font: "Quicksand",  sans-serif;
+  --heading-font: "Artistik", cursive, sans-serif; 
   --nav-font: "Poppins",  sans-serif;
 }
 
+/* Artistik */
 
+@font-face {
+  font-family: 'Artistik';
+  src: url('../fonts/Artistik.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
 
+.font-artistik {
+  font-family: 'Artistik', cursive, sans-serif;
+}
 
 /* Global Colors - The following color variables are used throughout the website. Updating them here will change the color scheme of the entire website */
 :root { 
@@ -1848,92 +1858,8 @@ section,
   text-align: center;
   position: relative;
   overflow: hidden;
-}
-
-.team .join-team-cta::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  right: -20%;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, color-mix(in srgb, var(--accent-color), transparent 85%) 0%, transparent 70%);
-  border-radius: 50%;
-}
-
-.team .join-team-cta .cta-icon {
-  width: 80px;
-  height: 80px;
-  border-radius: 20px;
-  background: color-mix(in srgb, var(--accent-color), transparent 85%);
-  color: var(--accent-color);
-  display: grid;
-  place-items: center;
-  margin: 0 auto 25px;
-  position: relative;
-  z-index: 2;
-}
-
-.team .join-team-cta .cta-icon i {
-  font-size: 2rem;
-}
-
-.team .join-team-cta .cta-content {
-  position: relative;
-  z-index: 2;
-}
-
-.team .join-team-cta .cta-content h4 {
-  font-size: 1.8rem;
-  margin-bottom: 15px;
-  color: var(--heading-color);
-}
-
-.team .join-team-cta .cta-content p {
-  font-size: 1.05rem;
-  color: color-mix(in srgb, var(--default-color), transparent 15%);
-  margin-bottom: 30px;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.team .join-team-cta .cta-content .cta-actions {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-.team .join-team-cta .cta-content .cta-actions .btn {
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.team .join-team-cta .cta-content .cta-actions .btn.btn-primary {
-  background: var(--accent-color);
-  color: var(--contrast-color);
-  border: 1px solid var(--accent-color);
-}
-
-.team .join-team-cta .cta-content .cta-actions .btn.btn-primary:hover {
-  background: color-mix(in srgb, var(--accent-color), black 15%);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px color-mix(in srgb, var(--accent-color), transparent 65%);
-}
-
-.team .join-team-cta .cta-content .cta-actions .btn.btn-outline {
-  background: transparent;
-  color: var(--accent-color);
-  border: 1px solid var(--accent-color);
-}
-
-.team .join-team-cta .cta-content .cta-actions .btn.btn-outline:hover {
-  background: var(--accent-color);
-  color: var(--contrast-color);
-  transform: translateY(-2px);
+  max-width: 600px; 
+  margin: 0 auto; 
 }
 
 .team .swiper-wrapper {
@@ -2237,23 +2163,6 @@ section,
 }
 
 /*--------------------------------------------------------------
-# Artistik Section
---------------------------------------------------------------*/
-
-@font-face {
-  font-family: 'Artistik';
-  src: url('../fonts/Artistik.woff2') format('woff2');
-  font-weight: normal;
-  font-style: normal;
-}
-
-.font-artistik {
-  font-family: 'Artistik', cursive, sans-serif;
-}
-
-
-
-/*--------------------------------------------------------------
 # Specific Objectives Section
 --------------------------------------------------------------*/
 
@@ -2368,7 +2277,7 @@ p {
 @media (min-width: 992px) {
   .list-hours {
     width: 70%;
-    width: 90%;
+    width: 80%;
     font-size: 1.1rem;
   }
 }

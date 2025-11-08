@@ -92,17 +92,55 @@
   document.addEventListener('scroll', toggleScrollTop);
 
   /**
+   * Function to ensure critical sections are visible
+   */
+  function ensureCriticalSectionsVisible() {
+    const criticalSections = ['#clients', '#contact'];
+    criticalSections.forEach(sectionId => {
+      const section = document.querySelector(sectionId);
+      if (section) {
+        // Remover atributos de AOS que puedan interferir
+        section.removeAttribute('data-aos');
+        section.removeAttribute('data-aos-delay');
+        section.classList.remove('aos-animate', 'aos-init');
+        
+        // Forzar visibilidad
+        section.style.cssText = 'opacity: 1 !important; visibility: visible !important; display: block !important; transform: none !important;';
+      }
+    });
+  }
+
+  /**
    * Animation on scroll function and init
    */
   function aosInit() {
+    if (typeof AOS === 'undefined') return;
+
+    // Primero asegurar secciones críticas
+    ensureCriticalSectionsVisible();
+
+    // Luego inicializar AOS
     AOS.init({
       duration: 600,
       easing: 'ease-in-out',
       once: true,
-      mirror: false
+      mirror: false,
+      disable: 'mobile'
     });
+
+    // Volver a asegurar secciones críticas después de AOS
+    setTimeout(ensureCriticalSectionsVisible, 100);
   }
-  window.addEventListener('load', aosInit);
+
+  // Inicializar AOS y asegurar secciones críticas en varios puntos
+  document.addEventListener('DOMContentLoaded', () => {
+    ensureCriticalSectionsVisible();
+  });
+
+  window.addEventListener('load', () => {
+    aosInit();
+    ensureCriticalSectionsVisible();
+  });
 
   /**
    * Initiate Pure Counter
@@ -141,32 +179,55 @@
         initIsotope.arrange({
           filter: this.getAttribute('data-filter')
         });
-        if (typeof aosInit === 'function') {
-          aosInit();
-        }
+        // Después de filtrar, asegurar que las secciones críticas permanezcan visibles
+        setTimeout(ensureCriticalSectionsVisible, 100);
       }, false);
     });
 
   });
 
   /**
-   * Init swiper sliders
+   * Init swiper for clients section
    */
-  function initSwiper() {
-    document.querySelectorAll(".init-swiper").forEach(function(swiperElement) {
-      let config = JSON.parse(
-        swiperElement.querySelector(".swiper-config").innerHTML.trim()
-      );
-
-      if (swiperElement.classList.contains("swiper-tab")) {
-        initSwiperWithCustomPagination(swiperElement, config);
-      } else {
-        new Swiper(swiperElement, config);
+  function initClientsSwiper() {
+    const clientsSection = document.querySelector("#clients");
+    const clientsSwiper = clientsSection?.querySelector(".init-swiper");
+    
+    if (clientsSwiper) {
+      try {
+        // Asegurar que la sección esté visible antes de inicializar Swiper
+        clientsSection.style.cssText = 'opacity: 1 !important; visibility: visible !important; display: block !important;';
+        
+        const configEl = clientsSwiper.querySelector(".swiper-config");
+        if (configEl) {
+          const config = JSON.parse(configEl.innerHTML.trim());
+          
+          // Si ya existe una instancia de Swiper, destruirla
+          if (clientsSwiper.swiper) {
+            clientsSwiper.swiper.destroy(true, true);
+          }
+          
+          // Crear nueva instancia de Swiper
+          const swiper = new Swiper(clientsSwiper, config);
+          
+          // Asegurar que la sección permanezca visible después de la inicialización
+          setTimeout(() => {
+            ensureCriticalSectionsVisible();
+          }, 100);
+        }
+      } catch (e) {
+        console.warn('Error initializing clients swiper:', e);
       }
-    });
+    }
   }
 
-  window.addEventListener("load", initSwiper);
+  // Inicializar Swiper en múltiples puntos para mayor seguridad
+  document.addEventListener("DOMContentLoaded", initClientsSwiper);
+  window.addEventListener("load", initClientsSwiper);
+  // También reinicializar cuando se cambia el tamaño de la ventana
+  window.addEventListener("resize", () => {
+    setTimeout(initClientsSwiper, 100);
+  });
 
   /**
    * Correct scrolling position upon page load for URLs containing hash links.
@@ -209,55 +270,140 @@
   document.addEventListener('scroll', navmenuScrollspy);
 
   /**
-   * Re-inicializa Swiper y refresca AOS una vez cargado el DOM
+   * Prevent page reload on logo clicks and handle smooth scroll
    */
-  document.addEventListener("DOMContentLoaded", function() {
-    if (typeof Swiper !== 'undefined') {
-      document.querySelectorAll('.init-swiper').forEach(function(swiperEl) {
-        const configEl = swiperEl.querySelector('.swiper-config');
-        if (configEl) {
-          const config = JSON.parse(configEl.textContent);
-          new Swiper(swiperEl, config);
-        }
+  document.addEventListener('click', function(e) {
+    const target = e.target.closest('.logo');
+    if (target) {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
       });
-    }
-
-    if (typeof AOS !== 'undefined') {
-      AOS.refresh();
+      // Re-ensure critical sections are visible after logo click
+      setTimeout(ensureCriticalSectionsVisible, 100);
+      // Also ensure swiper is working
+      setTimeout(initClientsSwiper, 200);
     }
   });
-  
+
+})();
+
+
+  /**
+   * Manejo de filtros y scroll para catálogos
+   */
+
 document.addEventListener('DOMContentLoaded', function () {
-  // Maneja tanto Papelería como Accesorios
-  const filterLinks = {
-    '#filter-papeleria': '.filter-web',
-    '#filter-accesorios': '.filter-mobile',
-    '#filter-muebleria': '.filter-branding',
-    '#filter-equipos': '.filter-ui'
+
+  const filterTargets = {
+    '#filter-papeleria': '#filter-papeleria',
+    '#filter-accesorios': '#filter-accesorios',
+    '#filter-muebleria': '#filter-muebleria',
+    '#filter-equipos': '#filter-equipos'
   };
 
-  // Agrega listeners a ambos enlaces
-  Object.keys(filterLinks).forEach(filterId => {
-    const link = document.querySelector(`a[href="${filterId}"]`);
+  Object.keys(filterTargets).forEach(linkHref => {
+    const link = document.querySelector(`a[href="${linkHref}"]`);
     if (!link) return;
-    
+
     link.addEventListener('click', function (e) {
       e.preventDefault();
-      // Mantiene el scroll hacia Products como tenías
-      const target = document.querySelector('#Products');
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
-        
-        // Después del scroll, activa el filtro correspondiente
-        setTimeout(() => {
-          const filterElement = document.querySelector(filterId);
-          if (filterElement) {
-            filterElement.click();
-          }
-        }, 700); // Pequeño delay para que termine el scroll
-      }
+
+      // Scroll hacia el área de productos
+      const productsSection = document.querySelector('#portfolio');
+      if (!productsSection) return;
+
+      productsSection.scrollIntoView({ behavior: 'smooth' });
+
+      // Activa el filtro después de terminar scroll
+      setTimeout(() => {
+        const liFilter = document.querySelector(filterTargets[linkHref]);
+        if (liFilter) liFilter.click();
+      }, 600);
     });
   });
+
+});  
+  
+
+/**
+ * Horario de atención dinámico
+
+
+function actualizarEstadoHorario() {
+  const hoy = new Date();
+  const diaSemana = hoy.getDay(); // 0 Dom - 6 Sáb
+  const hora = hoy.getHours();
+  const minutos = hoy.getMinutes();
+  
+  // Horarios en formato 24h
+  const horarios = {
+    1: { apertura: 9, cierre: 19 }, // Lunes
+    2: { apertura: 9, cierre: 19 }, // Martes
+    3: { apertura: 9, cierre: 19 }, // Miércoles
+    4: { apertura: 9, cierre: 19 }, // Jueves
+    5: { apertura: 9, cierre: 19 }, // Viernes
+    6: { apertura: 9, cierre: 16 }, // Sábado
+    0: null // Domingo cerrado
+  };
+
+  const hoyHorario = horarios[diaSemana];
+  const estado = document.getElementById("estadoHorario");
+  const horarioTexto = document.getElementById("horarioHoy");
+
+  // Domingo o sin horario
+  if (!hoyHorario) {
+    estado.textContent = "Cerrado (Hoy no hay servicio)";
+    horarioTexto.textContent = "Horario: —";
+    return;
+  }
+
+  const ahoraEnMin = hora * 60 + minutos;
+  const apertura = hoyHorario.apertura * 60;
+  const cierre = hoyHorario.cierre * 60;
+
+  // Mostrar horario del día
+  horarioTexto.textContent = `Horario de hoy: ${hoyHorario.apertura}:00 a ${hoyHorario.cierre}:00 hrs`;
+
+  // Por abrir (faltan menos de 5 min)
+  if (ahoraEnMin >= apertura - 5 && ahoraEnMin < apertura) {
+    estado.textContent = "Por abrir (en menos de 5 minutos)";
+    return;
+  }
+
+  // Por cerrar (faltan menos de 5 min)
+  if (ahoraEnMin >= cierre - 5 && ahoraEnMin < cierre) {
+    estado.textContent = "Por cerrar (quedan ~5 minutos)";
+    return;
+  }
+
+  // Abierto
+  if (ahoraEnMin >= apertura && ahoraEnMin < cierre) {
+    estado.textContent = "Abierto";
+    return;
+  }
+
+  // Cerrado
+  estado.textContent = "Cerrado";
+}
+
+*/
+
+
+ 
+
+
+/*
+document.addEventListener('DOMContentLoaded', () => {
+  const dias = document.querySelectorAll('.list-hours .hour');
+  
+  const hoy = new Date().getDay();
+  if (dias[hoy]) {
+    dias[hoy].classList.add('today');
+  } else {
+    console.warn('No se encontró el elemento correspondiente al día actual.');
+  }
 });
 
 /**
@@ -339,6 +485,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.warn('No se encontró el elemento correspondiente al día actual.');
   }
 });
+
 */
 
 window.addEventListener('DOMContentLoaded', event => {
@@ -348,4 +495,4 @@ window.addEventListener('DOMContentLoaded', event => {
 
 
 
-})();
+
