@@ -95,7 +95,7 @@
    * Function to ensure critical sections are visible
    */
   function ensureCriticalSectionsVisible() {
-    const criticalSections = ['#clients', '#contact'];
+    const criticalSections = ['#clients', '#contact', '#about'];
     criticalSections.forEach(sectionId => {
       const section = document.querySelector(sectionId);
       if (section) {
@@ -105,7 +105,12 @@
         section.classList.remove('aos-animate', 'aos-init');
         
         // Forzar visibilidad
-        section.style.cssText = 'opacity: 1 !important; visibility: visible !important; display: block !important; transform: none !important;';
+        section.style.cssText = 'opacity: 1 !important; visibility: visible !important; display: block !important; transform: none !important; pointer-events: auto !important;';
+        
+        // Asegurar que los elementos internos también sean visibles
+        section.querySelectorAll('.section-content, .swiper-container, .list-hours').forEach(el => {
+          el.style.cssText = 'opacity: 1 !important; visibility: visible !important; display: block !important; transform: none !important;';
+        });
       }
     });
   }
@@ -119,17 +124,22 @@
     // Primero asegurar secciones críticas
     ensureCriticalSectionsVisible();
 
-    // Luego inicializar AOS
+    // Luego inicializar AOS con configuración optimizada
     AOS.init({
-      duration: 600,
-      easing: 'ease-in-out',
+      duration: 400,
+      easing: 'ease-out',
       once: true,
       mirror: false,
-      disable: 'mobile'
+      disable: 'mobile',
+      startEvent: 'DOMContentLoaded',
+      offset: 50,
+      delay: 0
     });
 
-    // Volver a asegurar secciones críticas después de AOS
+    // Asegurar secciones críticas inmediatamente y después de un tiempo
+    ensureCriticalSectionsVisible();
     setTimeout(ensureCriticalSectionsVisible, 100);
+    setTimeout(ensureCriticalSectionsVisible, 500);
   }
 
   // Inicializar AOS y asegurar secciones críticas en varios puntos
@@ -195,24 +205,40 @@
     
     if (clientsSwiper) {
       try {
-        // Asegurar que la sección esté visible antes de inicializar Swiper
-        clientsSection.style.cssText = 'opacity: 1 !important; visibility: visible !important; display: block !important;';
+        // Forzar visibilidad de la sección y sus elementos
+        clientsSection.style.cssText = 'opacity: 1 !important; visibility: visible !important; display: block !important; transform: none !important;';
+        clientsSwiper.style.cssText = 'opacity: 1 !important; visibility: visible !important; display: block !important;';
         
         const configEl = clientsSwiper.querySelector(".swiper-config");
         if (configEl) {
           const config = JSON.parse(configEl.innerHTML.trim());
+          
+          // Asegurar que todos los slides estén cargados
+          const slides = clientsSwiper.querySelectorAll('.swiper-slide');
+          slides.forEach(slide => {
+            slide.style.cssText = 'opacity: 1 !important; visibility: visible !important; display: block !important;';
+          });
           
           // Si ya existe una instancia de Swiper, destruirla
           if (clientsSwiper.swiper) {
             clientsSwiper.swiper.destroy(true, true);
           }
           
-          // Crear nueva instancia de Swiper
-          const swiper = new Swiper(clientsSwiper, config);
+          // Crear nueva instancia de Swiper con configuración mejorada
+          const swiper = new Swiper(clientsSwiper, {
+            ...config,
+            preloadImages: false,
+            updateOnWindowResize: true,
+            observer: true,
+            observeParents: true,
+            observeSlideChildren: true,
+            watchOverflow: true
+          });
           
-          // Asegurar que la sección permanezca visible después de la inicialización
+          // Asegurar visibilidad después de la inicialización
           setTimeout(() => {
             ensureCriticalSectionsVisible();
+            swiper.update();
           }, 100);
         }
       } catch (e) {
