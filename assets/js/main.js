@@ -324,175 +324,95 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-});  
-  
-
-/**
- * Horario de atención dinámico
-
-
-function actualizarEstadoHorario() {
-  const hoy = new Date();
-  const diaSemana = hoy.getDay(); // 0 Dom - 6 Sáb
-  const hora = hoy.getHours();
-  const minutos = hoy.getMinutes();
-  
-  // Horarios en formato 24h
-  const horarios = {
-    1: { apertura: 9, cierre: 19 }, // Lunes
-    2: { apertura: 9, cierre: 19 }, // Martes
-    3: { apertura: 9, cierre: 19 }, // Miércoles
-    4: { apertura: 9, cierre: 19 }, // Jueves
-    5: { apertura: 9, cierre: 19 }, // Viernes
-    6: { apertura: 9, cierre: 16 }, // Sábado
-    0: null // Domingo cerrado
-  };
-
-  const hoyHorario = horarios[diaSemana];
-  const estado = document.getElementById("estadoHorario");
-  const horarioTexto = document.getElementById("horarioHoy");
-
-  // Domingo o sin horario
-  if (!hoyHorario) {
-    estado.textContent = "Cerrado (Hoy no hay servicio)";
-    horarioTexto.textContent = "Horario: —";
-    return;
-  }
-
-  const ahoraEnMin = hora * 60 + minutos;
-  const apertura = hoyHorario.apertura * 60;
-  const cierre = hoyHorario.cierre * 60;
-
-  // Mostrar horario del día
-  horarioTexto.textContent = `Horario de hoy: ${hoyHorario.apertura}:00 a ${hoyHorario.cierre}:00 hrs`;
-
-  // Por abrir (faltan menos de 5 min)
-  if (ahoraEnMin >= apertura - 5 && ahoraEnMin < apertura) {
-    estado.textContent = "Por abrir (en menos de 5 minutos)";
-    return;
-  }
-
-  // Por cerrar (faltan menos de 5 min)
-  if (ahoraEnMin >= cierre - 5 && ahoraEnMin < cierre) {
-    estado.textContent = "Por cerrar (quedan ~5 minutos)";
-    return;
-  }
-
-  // Abierto
-  if (ahoraEnMin >= apertura && ahoraEnMin < cierre) {
-    estado.textContent = "Abierto";
-    return;
-  }
-
-  // Cerrado
-  estado.textContent = "Cerrado";
-}
-
-*/
-
-
- 
-
-
-/*
-document.addEventListener('DOMContentLoaded', () => {
-  const dias = document.querySelectorAll('.list-hours .hour');
-  
-  const hoy = new Date().getDay();
-  if (dias[hoy]) {
-    dias[hoy].classList.add('today');
-  } else {
-    console.warn('No se encontró el elemento correspondiente al día actual.');
-  }
 });
 
 /**
- * Horario de atención dinámico
-*/
-
-function actualizarEstadoHorario() {
-  const hoy = new Date();
-  const diaSemana = hoy.getDay(); // 0 Dom - 6 Sáb
-  const hora = hoy.getHours();
-  const minutos = hoy.getMinutes();
-  
-  // Horarios en formato 24h
-  const horarios = {
-    1: { apertura: 9, cierre: 19 }, // Lunes
-    2: { apertura: 9, cierre: 19 }, // Martes
-    3: { apertura: 9, cierre: 19 }, // Miércoles
-    4: { apertura: 9, cierre: 19 }, // Jueves
-    5: { apertura: 9, cierre: 19 }, // Viernes
-    6: { apertura: 9, cierre: 16 }, // Sábado
-    0: null // Domingo cerrado
-  };
-
-  const hoyHorario = horarios[diaSemana];
-  const estado = document.getElementById("estadoHorario");
-  const horarioTexto = document.getElementById("horarioHoy");
-
-  // Domingo o sin horario
-  if (!hoyHorario) {
-    estado.textContent = "Cerrado (Hoy no hay servicio)";
-    horarioTexto.textContent = "Horario: —";
-    return;
-  }
-
-  const ahoraEnMin = hora * 60 + minutos;
-  const apertura = hoyHorario.apertura * 60;
-  const cierre = hoyHorario.cierre * 60;
-
-  // Mostrar horario del día
-  horarioTexto.textContent = `Horario de hoy: ${hoyHorario.apertura}:00 a ${hoyHorario.cierre}:00 hrs`;
-
-  // Por abrir (faltan menos de 5 min)
-  if (ahoraEnMin >= apertura - 5 && ahoraEnMin < apertura) {
-    estado.textContent = "Por abrir (en menos de 5 minutos)";
-    return;
-  }
-
-  // Por cerrar (faltan menos de 5 min)
-  if (ahoraEnMin >= cierre - 5 && ahoraEnMin < cierre) {
-    estado.textContent = "Por cerrar (quedan ~5 minutos)";
-    return;
-  }
-
-  // Abierto
-  if (ahoraEnMin >= apertura && ahoraEnMin < cierre) {
-    estado.textContent = "Abierto";
-    return;
-  }
-
-  // Cerrado
-  estado.textContent = "Cerrado";
-}
-
-
-  document.addEventListener("DOMContentLoaded", actualizarEstadoHorario);
-
-
- 
-
-
-/*
-document.addEventListener('DOMContentLoaded', () => {
-  const dias = document.querySelectorAll('.list-hours .hour');
-  
-  const hoy = new Date().getDay();
-  if (dias[hoy]) {
-    dias[hoy].classList.add('today');
-  } else {
-    console.warn('No se encontró el elemento correspondiente al día actual.');
-  }
-});
-
-*/
+ * Resaltar el día actual en bloques de horarios
+ */
 
 window.addEventListener('DOMContentLoaded', event => {
-    const listHoursArray = document.body.querySelectorAll('.list-hours li');
-    listHoursArray[new Date().getDay()].classList.add(('today'));
-})
+    // Seleccionar todos los bloques de horarios
+    const hoursBlocks = document.body.querySelectorAll('.list-hours');
+    
+    // Para cada bloque de horarios
+    hoursBlocks.forEach(block => {
+        const listHoursArray = block.querySelectorAll('li');
+        const todayIndex = new Date().getDay(); // 0=Domingo, 1=Lunes, etc.
+        
+        // Aplicar la clase 'today' al día actual en este bloque
+        if (listHoursArray[todayIndex]) {
+            listHoursArray[todayIndex].classList.add('today');
+        }
+    });
+});
+
+
+/**
+ * Horario de apertura dinámico
+ */
 
 
 
+function crearEstadoHorario(elementId, horarios) {
+  const elemento = document.getElementById(elementId);
 
+  function actualizar() {
+    const ahora = new Date();
+    const dia = ahora.getDay(); // 0=Dom ... 6=Sáb
+    const horaActual = ahora.getHours() + ahora.getMinutes() / 60;
+    const hoy = horarios[dia];
+
+    let estado, clase;
+
+    if (!hoy || hoy.length === 0) {
+      estado = "Cerrado ahora";
+      clase = "estado-cerrado";
+    } else {
+      const margen = 5 / 60; // 5 minutos antes
+      let abierto = false, porAbrir = false, porCerrar = false;
+
+      for (const rango of hoy) {
+        const [inicio, fin] = rango;
+        if (horaActual >= inicio && horaActual <= fin) abierto = true;
+        if (horaActual >= inicio - margen && horaActual < inicio) porAbrir = true;
+        if (horaActual > fin - margen && horaActual <= fin) porCerrar = true;
+      }
+
+      if (abierto) { estado = "Abierto ahora"; clase = "estado-abierto"; }
+      else if (porAbrir) { estado = "Por abrir"; clase = "estado-por-abrir"; }
+      else if (porCerrar) { estado = "Por cerrar"; clase = "estado-por-cerrar"; }
+      else { estado = "Cerrado ahora"; clase = "estado-cerrado"; }
+    }
+
+    elemento.textContent = estado;
+    elemento.className = "estado-horario " + clase;
+  }
+
+  actualizar();
+  setInterval(actualizar, 30000); // actualiza cada 30 segundos
+}
+
+/* --- Horarios en formato [inicio, fin] usando 24h --- */
+const horarioTienda = {
+  0: [], // Domingo
+  1: [[9, 19]],
+  2: [[9, 19]],
+  3: [[9, 19]],
+  4: [[9, 19]],
+  5: [[9, 19]],
+  6: [[9, 16]]
+};
+
+const horarioServicio = {
+  0: [], // Domingo
+  1: [[10, 14.5], [16, 18.5]],
+  2: [[10, 14.5], [16, 18.5]],
+  3: [[10, 14.5], [16, 18.5]],
+  4: [[10, 14.5], [16, 18.5]],
+  5: [[10, 14.5], [16, 18.5]],
+  6: [] // Sábado cerrado
+};
+
+/* --- Inicializar ambos --- */
+crearEstadoHorario("estado-tienda", horarioTienda);
+crearEstadoHorario("estado-servicio", horarioServicio);

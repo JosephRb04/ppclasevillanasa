@@ -1941,6 +1941,27 @@ section,
   }
 }
 
+/*--------------------------------------------------------------
+# Responsive Spacing for Hours Section
+--------------------------------------------------------------*/
+@media (max-width: 992px) {
+  .team .join-team-cta {
+    margin-bottom: 2rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .team .join-team-cta {
+    margin-bottom: 2.5rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .team .join-team-cta {
+    margin-bottom: 3rem !important;
+  }
+}
+
 
 /*--------------------------------------------------------------
 # Error 404 Section
@@ -2264,11 +2285,19 @@ p {
   font-style: italic;
 }
 
-
+/*--------------------------------------------------------------
+# Today Class for Hours Section
 
 .today {
   color: var(--heading-color);
   font-family: var(--heading-font);
+  font-family: 'Artistik', cursive, sans-serif;
+}
+--------------------------------------------------------------*/
+
+.list-hours-item.today,
+.list-hours-item.today span {
+  color: var(--heading-color);
   font-family: 'Artistik', cursive, sans-serif;
 }
 
@@ -2286,6 +2315,31 @@ p {
 # Schedule Section
 --------------------------------------------------------------*/
 
+.estado-horario {
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  display: inline-block;
+  transition: all 0.3s ease-in-out;
+}
+.estado-abierto {
+  background: #d1ffd8;
+  color: #056608;
+}
+.estado-cerrado {
+  background: #ffd1d1;
+  color: #8b0000;
+}
+.estado-por-abrir {
+  background: #fff2cc;
+  color: #8a6d00;
+}
+.estado-por-cerrar {
+  background: #ffe5b4;
+  color: #8a4b00;
+}
 
 
 
