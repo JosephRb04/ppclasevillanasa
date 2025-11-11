@@ -363,3 +363,146 @@
   }
 
 })();
+=======
+  });
+
+});
+
+/**
+ * Resaltar el día actual en bloques de horarios
+ */
+
+window.addEventListener('DOMContentLoaded', event => {
+    // Seleccionar todos los bloques de horarios
+    const hoursBlocks = document.body.querySelectorAll('.list-hours');
+    
+    // Para cada bloque de horarios
+    hoursBlocks.forEach(block => {
+        const listHoursArray = block.querySelectorAll('li');
+        const todayIndex = new Date().getDay(); // 0=Domingo, 1=Lunes, etc.
+        
+        // Aplicar la clase 'today' al día actual en este bloque
+        if (listHoursArray[todayIndex]) {
+            listHoursArray[todayIndex].classList.add('today');
+        }
+    });
+});
+
+
+/**
+ * Horario de apertura dinámico con actualización en tiempo real optimizada
+ */
+
+function crearEstadoHorario(elementId, horarios) {
+  const elemento = document.getElementById(elementId);
+  let intervalId = null;
+
+  function actualizar() {
+    const ahora = new Date();
+    const dia = ahora.getDay(); // 0=Dom ... 6=Sáb
+    // Incluir segundos para mayor precisión
+    const horaActual = ahora.getHours() + ahora.getMinutes() / 60 + ahora.getSeconds() / 3600;
+    const hoy = horarios[dia];
+
+    let estado, clase;
+
+    if (!hoy || hoy.length === 0) {
+      estado = "Cerrado ahora";
+      clase = "estado-cerrado";
+    } else {
+      const margen = 5 / 60; // 5 minutos antes
+      let abierto = false, porAbrir = false, porCerrar = false;
+
+      for (const rango of hoy) {
+        const [inicio, fin] = rango;
+        
+        // Verificar si está abierto (dentro del horario)
+        if (horaActual >= inicio && horaActual <= fin) {
+          abierto = true;
+        }
+        
+        // Verificar si está por abrir (5 minutos antes de apertura)
+        if (horaActual >= inicio - margen && horaActual < inicio) {
+          porAbrir = true;
+        }
+        
+        // Verificar si está por cerrar (5 minutos antes de cierre)
+        if (horaActual > fin - margen && horaActual <= fin) {
+          porCerrar = true;
+        }
+      }
+
+      // Prioridad: primero por cerrar, luego abierto, luego por abrir
+      if (porCerrar) { 
+        estado = "Por cerrar"; 
+        clase = "estado-por-cerrar"; 
+      }
+      else if (abierto) { 
+        estado = "Abierto ahora"; 
+        clase = "estado-abierto"; 
+      }
+      else if (porAbrir) { 
+        estado = "Por abrir"; 
+        clase = "estado-por-abrir"; 
+      }
+      else { 
+        estado = "Cerrado ahora"; 
+        clase = "estado-cerrado"; 
+      }
+    }
+
+    elemento.textContent = estado;
+    elemento.className = "estado-horario " + clase;
+  }
+
+  function programarActualizacion() {
+    // Limpiar intervalo anterior si existe
+    if (intervalId) clearInterval(intervalId);
+    
+    // Primera actualización inmediata
+    actualizar();
+    
+    // Actualizar cada 10 segundos para mayor precisión
+    intervalId = setInterval(actualizar, 10000);
+  }
+
+  // Actualizar cuando la pestaña vuelve a estar visible
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      programarActualizacion();
+    }
+  });
+
+  // Iniciar
+  programarActualizacion();
+  
+  // Retornar función para detener actualizaciones si es necesario
+  return () => {
+    if (intervalId) clearInterval(intervalId);
+  };
+}
+
+/* --- Horarios en formato [inicio, fin] usando 24h --- */
+const horarioTienda = {
+  0: [], // Domingo
+  1: [[9, 23.5]],
+  2: [[9, 19]],
+  3: [[9, 19]],
+  4: [[9, 19]],
+  5: [[9, 19]],
+  6: [[9, 16]]
+};
+
+const horarioServicio = {
+  0: [], // Domingo
+  1: [[10, 14.5], [16, 23.5]],
+  2: [[10, 14.5], [16, 18.5]],
+  3: [[10, 14.5], [16, 18.5]],
+  4: [[10, 14.5], [16, 18.5]],
+  5: [[10, 14.5], [16, 18.5]],
+  6: [] // Sábado cerrado
+};
+
+/* --- Inicializar ambos --- */
+const detenerTienda = crearEstadoHorario("estado-tienda", horarioTienda);
+const detenerServicio = crearEstadoHorario("estado-servicio", horarioServicio);
